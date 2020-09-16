@@ -10,11 +10,12 @@ document.addEventListener("DOMContentLoaded", function(e){
             div.innerHTML = `<p>${inputText}</p>`
             const parentDiv = document.querySelector("#list")
             parentDiv.append(div) 
+            form.reset()
         })
     }
     leaveComment()
 
-    const arrayOfLikedCounter = []
+    const likesHash = {}
 
     function timer(){
         const time = document.querySelector('h1#counter')
@@ -34,12 +35,14 @@ document.addEventListener("DOMContentLoaded", function(e){
                     if(e.target.innerText === "pause") {
                         clearInterval(incrementer);
                         e.target.textContent = "resume"
+                        buttonsDisabled(true)
                     } else {
                         e.target.textContent = "pause"
                         incrementer = setInterval(function(){
                             counter++;
                             time.textContent = counter;
                         }, 1000)
+                        buttonsDisabled(false)
                     }
                 } else if (e.target.matches('button#minus')){
                     counter--;
@@ -48,45 +51,22 @@ document.addEventListener("DOMContentLoaded", function(e){
                     counter++;
                     time.textContent = counter;
                 } else if (e.target.matches('button#heart')){
-    
-                    
-
-                    function liked(array, element){
-
+                    const parentUl = document.querySelector("ul.likes")
+                    if (likesHash.hasOwnProperty(`${counter}`)){
+                        likesHash[counter] += 1;
+                        const existingLi = parentUl.querySelector(`li[data-number='${counter}']`)
+                        existingLi.textContent = `${counter} was liked ${likesHash[counter]} times`
+                        console.log(existingLi)
+                    } else {
+                        likesHash[counter] = 1;
                         const li = document.createElement('li')
-
-                        let countVar = 1;
-
-                        for(const obj in array){
-                            if (obj.hasOwnProperty(element)){
-                                obj[element] += 1;
-                                const existingLi = document.querySelector(`[data-number='${element}']`)
-                                existingLi.textContent = `${element} was liked ${obj[element]} times`
-                            } else {
-                                const counterObj = {}
-                                counterObj[counter] = countVar;
-                                arrayOfLikedCounter.push(counterObj)
-                                li.textContent = `${counter} was liked ${countVar} times`
-                                li.dataset.number = counter
-                    
-                                const parentUl = document.querySelector("ul.likes")
-                                parentUl.append(li)
-                                // console.log(li)
-                            }
-                        }
-                        // const counterObj = {}
-                        // counterObj[counter] = countVar;
-                        // arrayOfLikedCounter.push(counterObj)
-                        // li.textContent = `${counter} was liked ${countVar} times`
-                        // li.dataset.number = counter
+                        li.textContent = `${counter} was liked ${likesHash[counter]} time`
+                        li.dataset.number = counter
             
-                        // const parentUl = document.querySelector("ul.likes")
-                        // parentUl.append(li)
-                        // console.log(li)
-                    }
-                    liked(arrayOfLikedCounter, counter)
                         
-                    
+                        parentUl.append(li)
+
+                    }  
                 }
             })
         }
@@ -94,5 +74,11 @@ document.addEventListener("DOMContentLoaded", function(e){
      
     }
     timer()
+
+    function buttonsDisabled(boolean){
+        document.querySelector('button#minus').disabled = boolean
+        document.querySelector('button#plus').disabled = boolean
+        document.querySelector('button#heart').disabled = boolean
+    }
 
 })
