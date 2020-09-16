@@ -13,4 +13,19 @@ document.addEventListener("DOMContentLoaded", function(e){
         })
     }
     leaveComment()
+
+    function timer(){
+        const time = document.querySelector('h1#counter')
+
+        let counter = 0;
+
+        setInterval(function(){
+            counter++;
+            time.textContent = counter;
+        }, 1000)
+
+        
+    }
+    timer()
+
 })
